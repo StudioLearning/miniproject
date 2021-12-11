@@ -1,0 +1,33 @@
+#
+version: "3.1"
+
+services:
+  studiolearning:
+    image: mcr.microsoft.com/dotnet/aspnet:6.0
+    volumes:
+      - ../app:/home/app
+    working_dir: /home/app
+    entrypoint: ["dotnet", "miniproject.dll"]
+    restart: always
+
+  # studiodb:
+  #   image: mariadb
+  #   restart: always
+  #   volumes:
+  #     - studiolearning_db:/var/lib/mysql
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: StudioLearning@2022
+
+  # studiophpmyadmin:
+  #   image: phpmyadmin
+  #   restart: always
+  #   environment:
+  #     - PMA_ARBITRARY=1
+
+# volumes:
+#   studiolearning_db:
+
+networks:
+  default:
+    external:
+      name: the_net

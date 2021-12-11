@@ -1,0 +1,18 @@
+{
+  "name": "studiolearning",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://studiolearning.online",
+  "scripts": {
+    "docker-clean": "docker rmi $(docker images --filter \"dangling=true\" -q --no-trunc)",
+    "docker-clean2": "docker rmi $(docker images -f \"dangling=true\" -q)",
+    "clean": "rm -rf bin obj && dotnet clean",
+    "dev": "dotnet watch",
+    "start": "dotnet run",
+    "build": "dotnet build",
+    "app": "dotnet publish -c release -o ../app --no-restore",
+    "update": "docker-compose up -d -V",
+    "predeploy": "yarn build && yarn app",
+    "deploy": "yarn update"
+  }
+}

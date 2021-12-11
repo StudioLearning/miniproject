@@ -1,0 +1,96 @@
+﻿@section HeadScripts {
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+}
+@{
+    ViewData["Title"] = "Payment";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a class="text-decoration-none" asp-area="" asp-controller="Home"
+                asp-action="Index"><i class="fas fa-home"></i> Home</a></li>
+        <li class="breadcrumb-item"><a class="text-decoration-none" asp-area="" asp-controller="Home"
+                asp-action="Index"><i class="fas fa-book"></i> All Course</a>
+        </li>
+        <li class="breadcrumb-item" aria-current="page"><a class="text-decoration-none" asp-area=""
+                asp-controller="Home" asp-action="Index"><i class="fas fa-book"></i> Course name</a></li>
+        <li class="breadcrumb-item active" aria-current="page"> Payment</li>
+    </ol>
+</nav>
+<h1>@ViewData["Title"]</h1>
+<div class="row">
+    <div class="col">
+        <p class="fw-bold fs-3">
+            <i class="fab fa-paypal" style="color: #002A8A"></i> <span style="color: #002A8A">Pay</span><span
+                style="color: #019BE1">Pal</span>
+        </p>
+    </div>
+</div>
+
+<div class="row pt-4">
+    <div class="col" style="text-indent: 2rem; font-size: 1.2rem">
+        <p>
+            <b>รหัสคำสั่งซื้อ</b> B12345
+        </p>
+        <p>
+            <b>รหัสคอร์ส</b> 123456789
+        </p>
+        <p>
+            <b>ชื่อคอร์ส</b> คอร์สอะไรสักอย่าง
+        </p>
+        <p>
+            <b>ผู้สอน</b> อาจารย์ใจดี
+        </p>
+    </div>
+</div>
+<div class="row text-end">
+    <div class="col-12">
+        <p>ราคา 500 บาท</p>
+        <p>ภาษี 35 บาท</p>
+        <p class="fw-bold">รวม 535 บาท</p>
+    </div>
+</div>
+<div class="row justify-content-center mt-5">
+    <div class="col-12 col-md-6 pb-5">
+        <div id="paypal-button-container"></div>
+    </div>
+
+</div>
+
+
+@section Scripts
+{
+<script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+<script>
+    paypal.Buttons({
+
+        // Sets up the transaction when a payment button is clicked
+        createOrder: function (data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: '77.44' // Can reference variables or functions. Example: `value: document.getElementById('...').value`
+                    }
+                }]
+            });
+        },
+
+        // Finalize the transaction after payer approval
+        onApprove: function (data, actions) {
+            return actions.order.capture().then(function (orderData) {
+                // Successful capture! For dev/demo purposes:
+                console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                var transaction = orderData.purchase_units[0].payments.captures[0];
+                alert('Transaction ' + transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
+
+                // When ready to go live, remove the alert and show a success message within this page. For example:
+                // var element = document.getElementById('paypal-button-container');
+                // element.innerHTML = '';
+                // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                // Or go to another URL:  actions.redirect('thank_you.html');
+            });
+        }
+    }).render('#paypal-button-container');
+
+</script>
+}

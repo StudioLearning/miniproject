@@ -1,0 +1,17 @@
+# directories
+**/bin/
+**/obj/
+**/out/
+
+# files
+Dockerfile*
+**/*.trx
+**/*.md
+**/*.ps1
+**/*.cmd
+**/*.sh
+
+.Dockerfile
+docker-compose.yml
+package.json
+.vscode/

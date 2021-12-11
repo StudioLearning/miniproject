@@ -1,0 +1,29 @@
+.header {
+  background-color: #ededed;
+  background-image: url("/img/math-board.jpg");
+  background-size: cover;
+  padding-top: 100px;
+  padding-bottom: 80px;
+  -webkit-text-stroke: 0.5px white;
+  -webkit-text-fill-color: #666;
+}
+
+.odd {
+  background-color: #ffffff;
+}
+
+.even {
+  background-color: #f7f9fa;
+}
+
+.icon-middle {
+  vertical-align: middle;
+}
+
+#carouselExampleCaptions {
+  background-color: #222;
+}
+
+.limit-height {
+  max-height: 350px;
+}
