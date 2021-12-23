@@ -1,11 +1,18 @@
 .header {
   background-color: #ededed;
-  background-image: url("/img/math-board.jpg");
-  background-size: cover;
+  /* -webkit-text-stroke: 0.5px white;
+  -webkit-text-fill-color: #666; */
+  padding-bottom: 30px;
+}
+
+.boyimg {
+  color: #666;
   padding-top: 100px;
   padding-bottom: 80px;
-  -webkit-text-stroke: 0.5px white;
-  -webkit-text-fill-color: #666;
+  background-image: url("/img/boylittle.png");
+  background-size: auto;
+  background-repeat: no-repeat;
+  background-position: bottom right;
 }
 
 .odd {
@@ -14,6 +21,27 @@
 
 .even {
   background-color: #f7f9fa;
+}
+
+.carouselTop {
+  background-color: #b6dd8a;
+  background-image: url("/img/carousel-top.png");
+  background-repeat: no-repeat;
+  background-size: auto;
+  background-position-y: bottom;
+  background-position-x: 50px;
+  margin-top: 30px;
+  /* margin-bottom: 30px; */
+}
+
+.carouselHeight {
+  height: 300px;
+}
+
+.carouselDocument {
+  padding: 20px 5px 10px 5px;
+  text-align: center;
+  color: #333;
 }
 
 .icon-middle {
@@ -25,5 +53,5 @@
 }
 
 .limit-height {
-  max-height: 350px;
+  max-height: 150px;
 }

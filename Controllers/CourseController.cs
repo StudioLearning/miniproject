@@ -5,24 +5,141 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Contentful.Core;
+using Contentful.Core.Search;
 using miniproject.Models;
+using miniproject.Models.Contentful;
+using Newtonsoft.Json;
 
 namespace miniproject.Controllers
 {
+    // [Authorize]
     public class CourseController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IContentfulClient _contentful;
 
-        public CourseController(ApplicationDbContext context)
+        public CourseController(ApplicationDbContext context, IContentfulClient contentful)
         {
             _context = context;
+            _contentful = contentful;
         }
 
         // GET: Course
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Course.ToListAsync());
+            // return View(await _context.Course.ToListAsync());
+            var courses = await _contentful.GetEntriesByType<CourseType>("courses");
+            var teachers = await _contentful.GetEntriesByType<Teacher>("teacher");
+            ViewBag.teachers = teachers;
+            return View(courses);
         }
+
+        public async Task<IActionResult> GetCourse(string id)
+        {
+            // var lesson = await _client.GetEntry<Lesson>(id);
+            var queryBuilder = QueryBuilder<Lesson>.New.Include(2)
+                .ContentTypeIs("lesson")
+                .FieldEquals(f => f.sku, id);
+            var lesson = await _contentful.GetEntries(queryBuilder);
+            ViewData["examplevideo"] = lesson.Items.First().linkyoutube?.Replace("youtu.be","youtube.com/embed");
+            return View(lesson.Items.First<Lesson>());
+        }
+
+        public async Task<IActionResult> Teachers()
+        {
+            var teachers = await _contentful.GetEntriesByType<Teacher>("teacher");
+            return View(teachers);
+        }
+
+        public async Task<IActionResult> Teacher(string id)
+        {
+            var queryBuilder = QueryBuilder<Teacher>.New.Include(2)
+                .ContentTypeIs("teacher")
+                .FieldEquals(f => f.teacherId, id);
+            var teacher = await _contentful.GetEntries(queryBuilder);
+
+            var queryCourse = QueryBuilder<Lesson>.New.Include(2)
+                .ContentTypeIs("lesson")
+                .FieldEquals("fields.teacher.sys.contentType.sys.id", "teacher")
+                .FieldEquals("fields.teacher.fields.teacherId", id);
+            var courses = await _contentful.GetEntries(queryCourse);
+            ViewBag.courses = courses;
+            // Console.WriteLine(JsonConvert.SerializeObject(courses));
+
+            return View(teacher.Items.First());
+        }
+
+        public async Task<IActionResult> Types()
+        {
+            var courseTypes = await _contentful.GetEntriesByType<CourseType>("courses");
+            return View(courseTypes);
+        }
+
+        public async Task<IActionResult> Type(string id)
+        {
+            var queryBuilder = QueryBuilder<CourseType>.New.Include(2)
+                .ContentTypeIs("courses")
+                .FieldEquals(f => f.name, id);
+            var courseType = await _contentful.GetEntries(queryBuilder);
+
+            var queryCourse = QueryBuilder<Lesson>.New.Include(2)
+                .ContentTypeIs("lesson")
+                .FieldEquals("fields.courses.sys.id", courseType.First().Sys.Id);
+            var courses = await _contentful.GetEntries(queryCourse);
+            ViewBag.courses = courses;
+
+            // Console.WriteLine(JsonConvert.SerializeObject(courses));
+
+            return View(courseType.Items.First());
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // GET: Course/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -53,7 +170,7 @@ namespace miniproject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Genre,Price")] Course course)
+        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Genre,Price")] TheCourse course)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +202,7 @@ namespace miniproject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Genre,Price")] Course course)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Genre,Price")] TheCourse course)
         {
             if (id != course.Id)
             {

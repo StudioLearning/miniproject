@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace miniproject.Models
 {
-    public class Course
+    public class TheCourse
     {
         public int Id { get; set; }
         public string? Title { get; set; }

@@ -1,4 +1,9 @@
-﻿@section HeadScripts {
+﻿@using Contentful.Core.Models
+@using miniproject.Models.Contentful
+
+@model Lesson
+
+@section HeadScripts {
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 }
 @{
@@ -8,12 +13,13 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a class="text-decoration-none" asp-area="" asp-controller="Home"
-                asp-action="Index"><i class="fas fa-home"></i> Home</a></li>
-        <li class="breadcrumb-item"><a class="text-decoration-none" asp-area="" asp-controller="Home"
-                asp-action="Index"><i class="fas fa-book"></i> All Course</a>
+                asp-action="Index"><i class="fas fa-home"></i> หน้าแรก</a></li>
+        <li class="breadcrumb-item"><a class="text-decoration-none" asp-area="" asp-controller="Course"
+                asp-action="Index">คอร์ส</a>
         </li>
         <li class="breadcrumb-item" aria-current="page"><a class="text-decoration-none" asp-area=""
-                asp-controller="Home" asp-action="Index"><i class="fas fa-book"></i> Course name</a></li>
+                asp-controller="Course" asp-action="GetCourse" asp-route-id="@Model.sku">
+                @Model.sku</a></li>
         <li class="breadcrumb-item active" aria-current="page"> Payment</li>
     </ol>
 </nav>
@@ -30,24 +36,27 @@
 <div class="row pt-4">
     <div class="col" style="text-indent: 2rem; font-size: 1.2rem">
         <p>
-            <b>รหัสคำสั่งซื้อ</b> B12345
+            <b>รหัสผู้ใช้</b> B@(ViewBag.currentUserID)
         </p>
         <p>
-            <b>รหัสคอร์ส</b> 123456789
+            <b>รหัสคำสั่งซื้อ</b> B@(new Random().Next(100000, 999999))
         </p>
         <p>
-            <b>ชื่อคอร์ส</b> คอร์สอะไรสักอย่าง
+            <b>รหัสคอร์ส</b> @Model.sku
         </p>
         <p>
-            <b>ผู้สอน</b> อาจารย์ใจดี
+            <b>ชื่อคอร์ส</b> @Model.name
+        </p>
+        <p>
+            <b>ผู้สอน</b> @Model.teacher.teacherName
         </p>
     </div>
 </div>
 <div class="row text-end">
     <div class="col-12">
-        <p>ราคา 500 บาท</p>
+        <p>ราคา @Model.price บาท</p>
         <p>ภาษี 35 บาท</p>
-        <p class="fw-bold">รวม 535 บาท</p>
+        <p class="fw-bold">รวม @(Model.price + 35) บาท</p>
     </div>
 </div>
 <div class="row justify-content-center mt-5">
@@ -69,7 +78,7 @@
             return actions.order.create({
                 purchase_units: [{
                     amount: {
-                        value: '77.44' // Can reference variables or functions. Example: `value: document.getElementById('...').value`
+                        value: '@(Model.price)' // Can reference variables or functions. Example: `value: document.getElementById('...').value`
                     }
                 }]
             });

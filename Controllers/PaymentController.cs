@@ -1,5 +1,8 @@
 ﻿using System.Diagnostics;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using miniproject.Models;
 using miniproject.Models.Contentful;
 using Contentful.Core;
@@ -8,12 +11,14 @@ using Newtonsoft.Json;
 
 namespace miniproject.Controllers;
 
-public class HomeController : Controller
+[Authorize]
+public class PaymentController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly IContentfulClient _contentful;
+    // private readonly UserManager<ApplicationUser> _userManager;
 
-    public HomeController(ILogger<HomeController> logger, IContentfulClient contentful)
+    public PaymentController(ILogger<HomeController> logger, IContentfulClient contentful)
     {
         _logger = logger;
         _contentful = contentful;
@@ -22,37 +27,30 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         // var lesson = await _client.GetEntries<Lesson>();
-        // var lesson = await _contentful.GetEntriesByType<Lesson>("lesson");
-        var queryLessonBuilder = QueryBuilder<Lesson>
-            .New.Limit(4)
-            .Include(2)
-            .ContentTypeIs("lesson");
-        var lesson = await _contentful.GetEntries(queryLessonBuilder);
-
+        // var less = await _client.GetEntriesByType<dynamic>("lesson");
+        // Console.WriteLine(less.First().image.fields.file.url);
+        var lesson = await _contentful.GetEntriesByType<Lesson>("lesson");
         // Console.WriteLine(lesson.First().content);
-        var queryBuilder = QueryBuilder<Website>.New.Include(2)
+        var queryBuilder = QueryBuilder<dynamic>.New.Include(2)
             .ContentTypeIs("config")
             .FieldEquals("sys.id", "2hAOEfjAjojqqm6ZuIHtEP");
         var website = await _contentful.GetEntries(queryBuilder);
-        ViewBag.website = website.Items.First();
+        ViewBag.w = website.Items.First();
      
         ViewData["fullwidth"] = "Yes is full";
         return View(lesson);
     }
 
-    public async Task<String> Test(string id)
+    public async Task<IActionResult> Course(string id)
     {
-        //var lesson = await _client.GetEntry<dynamic>("2hAOEfjAjojqqm6ZuIHtEP");
-        var queryBuilder = QueryBuilder<dynamic>.New.Include(2)
-            //.ContentTypeIs("lesson")
-            .FieldEquals("sys.id", "2hAOEfjAjojqqm6ZuIHtEP");
+        var queryBuilder = QueryBuilder<Lesson>.New.Include(2)
+            .ContentTypeIs("lesson")
+            .FieldEquals(f => f.sku, id);
         var lesson = await _contentful.GetEntries(queryBuilder);
-        return JsonConvert.SerializeObject(lesson);
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
+        ClaimsPrincipal currentUser = this.User;
+        var currentUserID = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
+        ViewBag.currentUserID = currentUserID;
+        return View(lesson.Items.First());
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

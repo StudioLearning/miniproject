@@ -1,0 +1,56 @@
+@using miniproject.Models.Contentful
+
+@model Lesson
+
+@{
+    var lesson = Model;
+}
+
+<div class="card h-100">
+    <a asp-area="" asp-controller="Course" asp-action="GetCourse" asp-route-id="@lesson?.sku">
+        <img class="card-img-top" src="@lesson?.image.File.Url" alt="Card image cap">
+    </a>
+    <div class="card-body">
+        <h5 class="card-title">
+            <a class="link text-dark text-decoration-none" asp-area="" asp-controller="Course" asp-action="GetCourse"
+                asp-route-id="@lesson?.sku">
+                @(lesson?.sku) @(lesson?.name)
+            </a>
+        </h5>
+        <p>
+            @foreach (var courseType in lesson.courses)
+            {
+                <span class="pe-1">
+                    <a class="link text-decoration-none" asp-area="" asp-controller="Course" asp-action="Type"
+                    asp-route-id="@(courseType.name)">
+                        @* <i class="@Html.Raw(courseType.fontIconTag)"></i> @(courseType.name) *@
+                        #@courseType.name
+                    </a>
+                </span>
+            }
+        </p>
+        <p class="card-text">@(lesson.description)</p>
+        <p>
+            <i class="fas fa-graduation-cap"></i>
+            <a class="link text-decoration-none" asp-area="" asp-controller="Course" asp-action="Teacher"
+                asp-route-id="@(lesson.teacher.teacherId)">
+                @(lesson.teacher.teacherName)
+            </a>
+        </p>
+        <div class="row">
+            <div class="col">
+                <partial name="_RateStar" />
+                <p class="fw-bold">THB@(lesson.price)</p>
+            </div>
+            <div class="col text-end align-self-end">
+                <a class="btn btn-primary" asp-area="" asp-controller="Course" asp-action="GetCourse"
+                    asp-route-id="@lesson.sku">
+                    see detail
+                </a>
+            </div>
+        </div>
+    </div>
+    @* <div class="card-footer">
+        <small class="text-muted">Last updated 3 mins ago</small>
+        </div> *@
+</div>

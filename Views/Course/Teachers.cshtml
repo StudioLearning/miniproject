@@ -1,0 +1,37 @@
+﻿@using Contentful.Core.Models
+@using miniproject.Models.Contentful
+
+@model ContentfulCollection<Teacher>
+
+@{
+    ViewData["Title"] = "Teacher";
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a class="text-decoration-none" asp-area="" asp-controller="Home"
+                asp-action="Index"><i class="fas fa-home"></i> หน้าแรก</a></li>
+        <li class="breadcrumb-item active" aria-current="page">ผู้สอน</li>
+    </ol>
+</nav>
+
+<section class="page-section bg-light" id="team">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Our Amazing Team</h2>
+            <h3 class="section-subheading text-muted">วิทยากรของเราพร้อมให้ความรู้</h3>
+        </div>
+        <div class="row justify-content-center">
+            @foreach (var teacher in Model)
+            {
+                @Html.Partial("_TeacherPartial", teacher)
+            }
+        </div>
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <p class="large text-muted">
+                    เรามีวิทยากรที่เพียบพร้อมให้ความรู้และมีความเชี่ยวชาญ
+                </p>
+            </div>
+        </div>
+    </div>
+</section>

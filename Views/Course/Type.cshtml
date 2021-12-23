@@ -1,0 +1,33 @@
+﻿@using Contentful.Core.Models
+@using miniproject.Models.Contentful
+
+@model CourseType
+
+@{
+    ViewData["Title"] = "หมวดหมู่";
+    CourseType courseType = Model;
+    ContentfulCollection<Lesson> lessons = ViewBag.courses;
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a class="text-decoration-none" asp-area="" asp-controller="Home"
+                asp-action="Index"><i class="fas fa-home"></i> หน้าแรก</a></li>
+        <li class="breadcrumb-item"><a class="text-decoration-none" asp-area="" asp-controller="Course"
+                asp-action="Types">หมวดหมู่</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">@(courseType.name)</li>
+    </ol>
+</nav>
+
+<div class="row text-center justify-content-center">
+    @Html.Partial("_CourseTypePartial", courseType)
+</div>
+
+<div class="row">
+    @foreach (var lesson in lessons)
+    {
+        <div class="p-2 col-12 col-md-6 col-lg-4 col-xl-3">
+            @Html.Partial("_CoursePartial", lesson)
+        </div>
+    }
+</div>
