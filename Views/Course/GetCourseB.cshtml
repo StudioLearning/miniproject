@@ -1,0 +1,58 @@
+﻿@using Contentful.Core.Models
+@using miniproject.Models.Contentful
+
+@model Lesson
+
+@{
+    ViewData["Title"] = "Course";
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a class="text-decoration-none" asp-area="" asp-controller="Home"
+                asp-action="Index"><i class="fas fa-home"></i> หน้าแรก</a></li>
+        <li class="breadcrumb-item"><a class="text-decoration-none" asp-area="" asp-controller="Course"
+                asp-action="Index">คอร์ส</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.sku</li>
+    </ol>
+</nav>
+<h1>@ViewData["Title"] @Model.name</h1>
+
+<div class="row">
+    <div class="col">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            @{
+                int CourseIndex = 1;
+            }
+            @foreach (var item in Model.course)
+            {
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link @(CourseIndex == 1 ? "active":"")" id="tab-course-@(CourseIndex)"
+                    data-bs-toggle="tab" data-bs-target="#content@(CourseIndex)" type="button" role="tab"
+                    aria-controls="content@(CourseIndex)"
+                    aria-selected="@(CourseIndex == 1 ? "true":"false")">เนื้อหาที่ @CourseIndex</button>
+                </li>
+                CourseIndex++;
+            }
+
+        </ul>
+        <div class="tab-content p-3 pt-5" id="myTabContent">
+            @{
+                CourseIndex = 1;
+            }
+            @foreach (var item in Model.course)
+            {
+                <div class="tab-pane fade @(CourseIndex == 1 ? "show active":"")" id="content@(CourseIndex)" role="tabpanel"
+                aria-labelledby="tab-course-@(CourseIndex)">
+                    <contentful-rich-text document="@(item.coursecontent)"></contentful-rich-text>
+                    <video width="100%" controls>
+                        <source src="@(item.coursevideo.File.Url)" type="video/mp4">
+                        Your browser does not support HTML video.
+                    </video>
+                </div>
+                CourseIndex++;
+            }
+        </div>
+    </div>
+</div>

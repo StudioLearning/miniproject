@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace miniproject.Controllers;
 
-[Authorize]
+[Authorize(Roles= "Admin")]
 public class TestController : Controller
 {
     private readonly ILogger<AuthController> _logger;

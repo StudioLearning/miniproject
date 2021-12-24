@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Contentful.Core;
 using Contentful.Core.Search;
 using miniproject.Models;
@@ -19,11 +20,20 @@ namespace miniproject.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IContentfulClient _contentful;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public CourseController(ApplicationDbContext context, IContentfulClient contentful)
+        public CourseController(
+            ApplicationDbContext context, 
+            IContentfulClient contentful, 
+            UserManager<ApplicationUser> userManager, 
+            RoleManager<IdentityRole> roleManager
+        )
         {
             _context = context;
             _contentful = contentful;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         // GET: Course
@@ -44,7 +54,11 @@ namespace miniproject.Controllers
                 .FieldEquals(f => f.sku, id);
             var lesson = await _contentful.GetEntries(queryBuilder);
             ViewData["examplevideo"] = lesson.Items.First().linkyoutube?.Replace("youtu.be","youtube.com/embed");
-            return View(lesson.Items.First<Lesson>());
+            var user = await _userManager.GetUserAsync(User);
+            if(user == null)
+                return View(lesson.Items.First<Lesson>());
+            else
+                return View("GetCourseB", lesson.Items.First());
         }
 
         public async Task<IActionResult> Teachers()

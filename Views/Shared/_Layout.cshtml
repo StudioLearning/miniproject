@@ -1,4 +1,10 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using miniproject.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
     var FullWidth = ViewData["fullwidth"];
 }
 <!DOCTYPE html>
@@ -38,15 +44,28 @@
                             </li> *@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">
-                                <i class="fab fa-youtube text-danger"></i>
-                                Course
+                                C
+                                <i class="fas fa-play text-info"></i>
+                                urse
                             </a>
                         </li>
-                        @* <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Test" asp-action="Index">
-                            Test Authorized
-                            </a>
-                            </li> *@
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">
+                                    คอร์สของฉัน
+                                </a>
+                            </li>
+                        }
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole(Roles.Admin.ToString()))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Test" asp-action="Index">
+                                    <i class="fas fa-laptop-code"></i>
+                                    CPanel
+                                </a>
+                            </li>
+                        }
                     </ul>
                     @* <ul class="navbar-nav me-auto">
                         </ul> *@
