@@ -12,8 +12,16 @@
 <div class="text-center header fw-bold even">
     <div class="container boyimg">
         <div class="row">
-            <h1 class="display-4 fw-bold">Welcome</h1>
-            <h2>Learn about Something.</h2>
+            <div class="col-12 mb-3">
+                <h1 class="display-4 fw-bold">
+                    <span class="headerSpan">Welcome</span>
+                </h1>
+            </div>
+            <div class="col-12">
+                <h2>
+                    <span class="headerSpan2">Learn about Something.</span>
+                </h2>
+            </div>
         </div>
     </div>
 
@@ -63,6 +71,13 @@
     </div>
 </div>
 
+<div class="container pt-5">
+    <div class="row pt-5 pb-5">
+        <div class="col-12">
+            @Html.Partial("_Stepper", Stepper.SELECT)
+        </div>
+    </div>
+</div>
 
 <div class="container">
     <div class="row pt-5">

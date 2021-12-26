@@ -1,0 +1,34 @@
+@model Stepper
+
+@{
+    Stepper step = Model;
+}
+@{
+    string isActive(Stepper s)
+    {
+        if (step == s)
+            return "is-active";
+        else
+            return null;
+    }
+
+    string isComplete(Stepper s)
+    {
+        if (step > s)
+            return "is-complete";
+        else
+            return null;
+    }
+}
+<ul class="StepperProgress">
+    @* <div class="progress-track"></div> *@
+    <li class="progress-step @(isActive(Stepper.SELECT)) @(isComplete(Stepper.SELECT))">
+        เลือกคอร์ส
+    </li>
+    <li class="progress-step @(isActive(Stepper.BUY)) @(isComplete(Stepper.BUY))">
+        กดสั่งซื้อ
+    </li>
+    <li class="progress-step @(isActive(Stepper.PAYMENT)) @(isComplete(Stepper.PAYMENT))">
+        ชำระเงิน
+    </li>
+</ul>

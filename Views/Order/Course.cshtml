@@ -11,7 +11,8 @@
 @{
     ViewData["Title"] = "Order";
     Lesson lesson = Model;
-    int TotalPrice = (int)lesson.price + 35;
+    double tax = Math.Round((int)lesson.price * .07, 2);
+    double coursePrice = (int)lesson.price - tax;
 }
 
 <nav aria-label="breadcrumb">
@@ -28,12 +29,29 @@
     </ol>
 </nav>
 
+<div class="row pt-5 pb-5">
+    <div class="col-12">
+        @Html.Partial("_Stepper", Stepper.BUY)
+    </div>
+</div>
+
 <div class="row pt-4 pb-4 justify-content-center">
     <div class="col-12 col-md-8 col-lg-6">
-        <div class="card w-80">
-            <img src="@lesson?.image?.File.Url" class="card-img-top" alt="Course">
+        <div class="card w-80" style="background-color: #f7f9fa;">
+            @* <img src="@lesson?.image?.File.Url" class="card-img-top" alt="Course"> *@
+            <video src="https://css-tricks-post-videos.s3.us-east-1.amazonaws.com/blurry-trees.mov" autoplay loop
+                playsinline muted></video>
+            <div class="text-center cart">
+                <span class="fa-stack fa-3x">
+                    <i class="fas fa-circle fa-stack-2x text-dark"></i>
+                    <i class="fas fa-shopping-cart fa-stack-1x fa-inverse"></i>
+                </span>
+            </div>
+
+
+
             <div class="card-body">
-                <h5 class="card-title pb-3">รายการคำสั่งซื้อ</h5>
+                <h5 class="card-title text-center pb-3">รายการคำสั่งซื้อ</h5>
                 <p class="card-text">
                     <b>วิชา</b> @lesson?.name
                 </p>
@@ -43,37 +61,41 @@
                 <p class="card-text">
                     <b>ผู้สอน</b> @lesson?.teacher?.teacherName
                 </p>
-                <div class="text-end">
-
-                    <p class="card-text">
-                        <b>ราคา</b> @lesson?.price บาท
-                    </p>
-                    <p class="card-text">
-                        <b>ภาษี</b> 35 บาท
-                    </p>
-                    <p class="card-text">
-                        <b>รวม</b> @TotalPrice บาท
-                    </p>
-                </div>
-                <p class="text-center">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        กดสั่งซื้อ
-                    </button>
+                <p class="card-text text-end">
+                    <b>ราคา</b> @coursePrice บาท
                 </p>
+                <p class="card-text text-end">
+                    <b>ภาษี</b> 7% @tax บาท
+                </p>
+                <h3 class="card-text text-center">
+                    <b>รวม</b> @lesson?.price บาท
+                </h3>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="row pt-4 pb-4 justify-content-center">
+    <div class="col-10 col-md-8 col-lg-6">
+        <button type="button" class="buybtn" data-bs-toggle="modal" data-bs-target="#confirmModal">
+            สั่งซื้อ
+        </button>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">ยืนยันการสั่งซื้อ @lesson?.sku</h5>
+                <h5 class="modal-title" id="confirmModalLabel">ยืนยันการสั่งซื้อ</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                กรุณากดปุ่มยืนยันเพื่อสั่งซื้อคอร์ส @lesson?.name ราคา @TotalPrice บาท
+            <div class="modal-body dialog">
+                <img class="mx-auto rounded-circle dialogImg" src="@(lesson?.image?.File.Url)" alt="Course" />
+                <h4>@lesson?.name</h4>
+                <p class="text-muted mb-0">รหัส @lesson?.sku</p>
+                <p class="text-muted">@lesson?.price บาท</p>
+                <p>กรุณากดปุ่ม <b>ยืนยัน</b> เพื่อสั่งซื้อคอร์ส</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
@@ -83,3 +105,29 @@
         </div>
     </div>
 </div>
+
+@* @section Scripts
+    {
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+    var player;
+    function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+    videoId: 'nfWlot6h_JM',
+    width: '100%',
+    height: '250',
+    playerVars: {
+    autoplay: 1,
+    autohide: 1,
+    mute: 1,
+    controls: 0,
+    modestbranding: 1,
+    loop: 1,
+    showinfo: 0,
+    playlist: 'kNizPk7xBbs'
+    }
+    });
+    }
+
+    </script>
+    } *@

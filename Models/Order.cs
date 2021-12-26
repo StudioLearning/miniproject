@@ -10,6 +10,10 @@ namespace miniproject.Models
         [Required]
         [Display(Name = "รหัสคอร์ส")]
         public string Sku { get; set; }
+        
+        [Required]
+        [Display(Name = "รหัสผู้ใช้")]
+        public string UserId { get; set; }
 
         [Display(Name = "วันที่สั่งซื้อ")]
         [DataType(DataType.DateTime)]

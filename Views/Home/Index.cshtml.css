@@ -5,6 +5,18 @@
   padding-bottom: 30px;
 }
 
+@media (max-width: 767.98px) {
+  .headerSpan {
+    background-color: #e5f3d4;
+    padding: 4px;
+  }
+
+  .headerSpan2 {
+    background-color: #e5f3d4;
+    padding: 4px;
+  }
+}
+
 .boyimg {
   color: #666;
   padding-top: 100px;

@@ -11,6 +11,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
     
     public DbSet<miniproject.Models.TheCourse> Course { get; set; }
+    public DbSet<miniproject.Models.Order> Order { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

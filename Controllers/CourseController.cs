@@ -22,18 +22,28 @@ namespace miniproject.Controllers
         private readonly IContentfulClient _contentful;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<ApplicationUser> _signManager;
 
         public CourseController(
             ApplicationDbContext context, 
             IContentfulClient contentful, 
             UserManager<ApplicationUser> userManager, 
-            RoleManager<IdentityRole> roleManager
+            RoleManager<IdentityRole> roleManager,
+            SignInManager<ApplicationUser> signInManager
         )
         {
             _context = context;
             _contentful = contentful;
             _userManager = userManager;
             _roleManager = roleManager;
+            _signManager = signInManager;
+        }
+
+        private async Task<Boolean> OrderCheck(string sku) {
+            var currentID = _userManager.GetUserId(User);
+            var Order = await _context.Order.ToListAsync();
+            var MyOrder = Order.FindAll(order => order.UserId == currentID);
+            return MyOrder.Any(order => order.Sku == sku);
         }
 
         // GET: Course
@@ -54,11 +64,11 @@ namespace miniproject.Controllers
                 .FieldEquals(f => f.sku, id);
             var lesson = await _contentful.GetEntries(queryBuilder);
             ViewData["examplevideo"] = lesson.Items.First().linkyoutube?.Replace("youtu.be","youtube.com/embed");
-            var user = await _userManager.GetUserAsync(User);
-            if(user == null)
-                return View(lesson.Items.First<Lesson>());
-            else
+            
+            if(_signManager.IsSignedIn(User) && await OrderCheck(id))
                 return View("GetCourseB", lesson.Items.First());
+            else
+                return View(lesson.Items.First<Lesson>());
         }
 
         public async Task<IActionResult> Teachers()

@@ -19,6 +19,12 @@
     </ol>
 </nav>
 
+<div class="row pt-5 pb-5">
+    <div class="col-12">
+        @Html.Partial("_Stepper", Stepper.SELECT)
+    </div>
+</div>
+
 <div class="row text-center justify-content-center">
     @Html.Partial("_CourseTypePartial", courseType)
 </div>

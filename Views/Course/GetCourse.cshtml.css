@@ -1,0 +1,13 @@
+.teacher {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+.teacher img {
+  width: 4rem;
+  height: 4rem;
+  border: 0.2rem solid rgba(0, 0, 0, 0.1);
+}
+.teacher h4 {
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+}

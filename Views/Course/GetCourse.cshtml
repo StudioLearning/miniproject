@@ -5,6 +5,7 @@
 
 @{
     ViewData["Title"] = "Course";
+    Lesson lesson = Model;
 }
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -16,6 +17,13 @@
         <li class="breadcrumb-item active" aria-current="page">@Model.sku</li>
     </ol>
 </nav>
+
+<div class="row pt-5 pb-5">
+    <div class="col-12">
+        @Html.Partial("_Stepper", Stepper.SELECT)
+    </div>
+</div>
+
 <h1>@ViewData["Title"] @Model.name</h1>
 <div class="row">
     <div class="col">
@@ -58,12 +66,14 @@
         <partial name="_RateStar" />
         <p>THB@(Model.price)</p>
     </div>
-    <div class="col-12 pb-3">
-        <i class="fas fa-graduation-cap fa-2x"></i><br />
-        <a class="link text-decoration-none" asp-area="" asp-controller="Course" asp-action="Teacher"
-            asp-route-id="@(Model.teacher.teacherId)">
-            @(Model.teacher.teacherName)
-        </a>
+    <div class="col-12 pb-3 teacher">
+        <img class="mx-auto rounded-circle" src="@(lesson?.teacher?.image?.File.Url)" alt="teacher" />
+        <h4>
+            <a class="link text-dark text-decoration-none" asp-area="" asp-controller="Course" asp-action="Teacher"
+                asp-route-id="@(lesson?.teacher?.teacherId)">
+                <i class="fas fa-graduation-cap"></i> @(lesson?.teacher?.teacherName)
+            </a>
+        </h4>
     </div>
     <div class="col-12 pb-5">
         <a class="btn btn-primary" asp-area="" asp-controller="Order" asp-action="Course" asp-route-id="@Model.sku">
