@@ -11,3 +11,129 @@
   margin-top: 1.5rem;
   margin-bottom: 0;
 }
+
+.buy-description {
+  margin-top: 50px;
+  text-align: center;
+  color: #999;
+  transition: opacity 0.3s ease;
+}
+
+.buy-description a {
+  color: #4a9df6;
+  text-decoration: none;
+}
+
+.buy-btn.is-open ~ .buy-description {
+  opacity: 0;
+}
+
+.buy-btn {
+  display: block;
+  position: relative;
+  max-width: 200px;
+  width: 100%;
+  height: 80px;
+  transition: max-width 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+    height 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+    transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
+  text-align: center;
+}
+
+.btn-front {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  line-height: 80px;
+  background-color: #f44336;
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  backface-visibility: hidden;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease,
+    line-height 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.btn-front:hover {
+  background-color: #f77066;
+}
+
+.btn-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #eee;
+  color: #222;
+  transform: translateZ(-2px) rotateX(180deg);
+  overflow: hidden;
+  transition: box-shadow 0.8s ease;
+}
+.btn-back p {
+  margin-top: 27px;
+  margin-bottom: 25px;
+}
+.btn-back a {
+  text-decoration: none;
+  padding: 12px 20px;
+  width: 30%;
+  margin: 0 5px;
+  background-color: transparent;
+  border: 0;
+  border-radius: 2px;
+  font-size: 1em;
+  cursor: pointer;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease;
+}
+.btn-back a:focus {
+  outline: 0;
+}
+.btn-back a.yes {
+  background-color: #2196f3;
+  color: #fff;
+}
+.btn-back a.yes:hover {
+  background-color: #51adf6;
+}
+.btn-back a.no {
+  color: #2196f3;
+}
+.btn-back a.no:hover {
+  background-color: #ddd;
+}
+*/ .buy-btn[data-direction="left"] .btn-back,
+.buy-btn[data-direction="right"] .btn-back {
+  transform: translateZ(-2px) rotateY(180deg);
+}
+
+.buy-btn.is-open {
+  max-width: 400px;
+  height: 160px;
+}
+.buy-btn.is-open .btn-front {
+  pointer-events: none;
+  line-height: 160px;
+}
+.buy-btn.is-open .btn-back {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.buy-btn[data-direction="top"].is-open {
+  transform: rotateX(180deg);
+}
+
+.buy-btn[data-direction="right"].is-open {
+  transform: rotateY(180deg);
+}
+
+.buy-btn[data-direction="bottom"].is-open {
+  transform: rotateX(-180deg);
+}
+
+.buy-btn[data-direction="left"].is-open {
+  transform: rotateY(-180deg);
+}

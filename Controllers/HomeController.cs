@@ -55,6 +55,15 @@ public class HomeController : Controller
         return View();
     }
 
+    public IActionResult Me() {
+        ViewData["fullwidth"] = "Yes is full";
+        return View();
+    }
+
+    public IActionResult Term() {
+        return View();
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

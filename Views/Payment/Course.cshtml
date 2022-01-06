@@ -8,6 +8,8 @@
 }
 @{
     ViewData["Title"] = "Payment";
+    Lesson lesson = Model;
+    Order order = ViewBag.order;
 }
 
 <nav aria-label="breadcrumb">
@@ -44,7 +46,7 @@
         <div class="card w-80">
             @* <img src="" class="card-img-top" alt="Course"> *@
             <div class="card-body">
-                <h5 class="card-title pb-3">รหัสใบสั่งซื้อ</h5>
+                <h5 class="card-title pb-3">รหัสใบสั่งซื้อ : @(order.Id)</h5>
                 <p class="card-text">
                     วิชา
                 </p>
@@ -61,13 +63,13 @@
     <div class="col-12 col-md-6 pb-5">
         <div id="paypal-button-container"></div>
     </div>
-
 </div>
 
 
 @section Scripts
 {
-<script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+<script
+    src="https://www.paypal.com/sdk/js?client-id=ATQ3dUs6iOV23KS0RkvaiunUlU8YmKPr39A_beYjDiDsVL8C0ukHXQljy5A9tJ5b6XlxhhDKdbCgv3h0&currency=THB&locale=th_TH"></script>
 <script>
     paypal.Buttons({
 
@@ -76,8 +78,11 @@
             return actions.order.create({
                 purchase_units: [{
                     amount: {
-                        value: '@(Model.price)' // Can reference variables or functions. Example: `value: document.getElementById('...').value`
-                    }
+                        currency_code: "THB",
+                        value: "@(lesson.price)",
+                    },
+                    description: "@(lesson.name)",
+                    custom_id: "B120154",
                 }]
             });
         },
@@ -87,16 +92,22 @@
             return actions.order.capture().then(function (orderData) {
                 // Successful capture! For dev/demo purposes:
                 console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
-                var transaction = orderData.purchase_units[0].payments.captures[0];
-                alert('Transaction ' + transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
+                // var transaction = orderData.purchase_units[0].payments.captures[0];
+                // alert('Transaction ' + transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
 
                 // When ready to go live, remove the alert and show a success message within this page. For example:
-                // var element = document.getElementById('paypal-button-container');
-                // element.innerHTML = '';
-                // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                var element = document.getElementById('paypal-button-container');
+                element.innerHTML = '';
+                element.innerHTML = '<h3 class="text-center">Thank you for your payment!</h3>';
                 // Or go to another URL:  actions.redirect('thank_you.html');
             });
+        },
+
+        onCancel: function (data) {
+            // Show a cancel page, or return to cart
+            console.log("this payment is cancel.");
         }
+
     }).render('#paypal-button-container');
 
 </script>

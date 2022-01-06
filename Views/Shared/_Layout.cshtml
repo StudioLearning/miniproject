@@ -45,7 +45,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">
                                 C
-                                <i class="fas fa-play text-info"></i>
+                                <i class="fas fa-play-circle text-info"></i>
                                 urse
                             </a>
                         </li>
@@ -103,9 +103,8 @@
                         Privacy
                     </a>
                     |
-                    <a class="link-secondary text-decoration-none" class="" asp-area="" asp-controller="Me"
-                        asp-action="Index">
-                        วิทยากร
+                    <a class="link-secondary text-decoration-none" asp-controller="Home" asp-action="Term">
+                        Term of use
                     </a>
                 </div>
             </div>
@@ -115,6 +114,9 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <!-- Start of HubSpot Embed Code -->
+    <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/21208371.js"></script>
+    <!-- End of HubSpot Embed Code -->
 </body>
 
 </html>

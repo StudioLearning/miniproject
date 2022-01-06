@@ -15,12 +15,18 @@ namespace miniproject.Controllers;
 public class PaymentController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly ApplicationDbContext _context;
     private readonly IContentfulClient _contentful;
     // private readonly UserManager<ApplicationUser> _userManager;
 
-    public PaymentController(ILogger<HomeController> logger, IContentfulClient contentful)
+    public PaymentController(
+        ILogger<HomeController> logger, 
+        IContentfulClient contentful,
+        ApplicationDbContext context
+    )
     {
         _logger = logger;
+        _context = context;
         _contentful = contentful;
     }
 
@@ -41,15 +47,27 @@ public class PaymentController : Controller
         return View(lesson);
     }
 
+    // string id = orderId
     public async Task<IActionResult> Course(string id)
     {
+        if (id == null)
+        {
+            return NotFound();
+        }
+        int TheId = Convert.ToInt32(id);
+        Order order = _context.Order.FirstOrDefault(m => m.Id == TheId);
+        if (order == null)
+        {
+            return NotFound();
+        }
         var queryBuilder = QueryBuilder<Lesson>.New.Include(2)
             .ContentTypeIs("lesson")
-            .FieldEquals(f => f.sku, id);
+            .FieldEquals(f => f.sku, order.Sku);
         var lesson = await _contentful.GetEntries(queryBuilder);
         ClaimsPrincipal currentUser = this.User;
         var currentUserID = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
         ViewBag.currentUserID = currentUserID;
+        ViewBag.order = order;
         return View(lesson.Items.First());
     }
 

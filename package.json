@@ -7,6 +7,7 @@
     "docker-clean": "docker rmi $(docker images --filter \"dangling=true\" -q --no-trunc)",
     "docker-clean2": "docker rmi $(docker images -f \"dangling=true\" -q)",
     "clean": "rm -rf bin obj && dotnet clean",
+    "clean-app": "rm -rf ../app",
     "dev": "dotnet watch",
     "start": "dotnet run",
     "build": "dotnet build",

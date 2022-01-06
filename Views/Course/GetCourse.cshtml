@@ -1,11 +1,18 @@
 ﻿@using Contentful.Core.Models
 @using miniproject.Models.Contentful
+@using Contentful.Core.Images
+
+@inject SignInManager<ApplicationUser> SignInManager
 
 @model Lesson
 
 @{
     ViewData["Title"] = "Course";
     Lesson lesson = Model;
+    var imageUrl = lesson?.teacher?.image?.File.Url;
+    var imageUrlBuilder =
+    ImageUrlBuilder.New().SetHeight(100).SetWidth(100).SetResizingBehaviour(ImageResizeBehaviour.Fill);
+    var teacherUrl = $"{imageUrl}{imageUrlBuilder.Build()}";
 }
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -67,7 +74,7 @@
         <p>THB@(Model.price)</p>
     </div>
     <div class="col-12 pb-3 teacher">
-        <img class="mx-auto rounded-circle" src="@(lesson?.teacher?.image?.File.Url)" alt="teacher" />
+        <img class="mx-auto rounded-circle" src="@(teacherUrl)" alt="teacher" />
         <h4>
             <a class="link text-dark text-decoration-none" asp-area="" asp-controller="Course" asp-action="Teacher"
                 asp-route-id="@(lesson?.teacher?.teacherId)">
@@ -75,9 +82,97 @@
             </a>
         </h4>
     </div>
-    <div class="col-12 pb-5">
+    @* <div class="col-12 pb-5">
         <a class="btn btn-primary" asp-area="" asp-controller="Order" asp-action="Course" asp-route-id="@Model.sku">
-            Buy Course <i class="fas fa-arrow-right"></i>
+        Buy Course <i class="fas fa-arrow-right"></i>
         </a>
+        </div> *@
+    <div class="col-12 pb-5" style="min-height: 300px;">
+        <div class="buy-btn" style="margin: auto;">
+            <div class="btn-back">
+                <p>ผู้เรียนยังไม่ได้ลงชื่อเข้าใช้ระบบกรุณา Login ก่อน</p>
+                <a href="@Url.Action("Course", "Order", new {id = Model.sku})" class="yes">
+                    <i class="fas fa-user"></i>
+                    Login
+                </a>
+                <a class="no">Cancle</a>
+            </div>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <a href="@Url.Action("Course", "Order", new {id = Model.sku})" class="btn-front">
+                    ไปยังหน้าสั่งซื้อ
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            }
+            else
+            {
+                <a class="btn-front">
+                    ไปยังหน้าสั่งซื้อ
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            }
+        </div>
+        @if (!SignInManager.IsSignedIn(User))
+        {
+            <p class="buy-description">ต้องเข้าใช้ระบบก่อนสั่งซื้อคอร์สเรียน</p>
+        }
     </div>
 </div>
+
+@if (!SignInManager.IsSignedIn(User))
+    @section Scripts
+{
+<script>
+    window.onload = function () {
+
+        var btn = document.querySelector('.buy-btn');
+
+        var btnFront = btn.querySelector('.btn-front'),
+            //btnYes = btn.querySelector('.btn-back .yes'),
+            btnNo = btn.querySelector('.btn-back .no');
+
+
+        btnFront.addEventListener('click', function (event) {
+            event.preventDefault();
+            var mx = event.clientX - btn.offsetLeft,
+                my = event.clientY - btn.offsetTop;
+
+            console.log(event.clientX);
+            console.log(event.clientY);
+
+            var w = btn.offsetWidth,
+                h = btn.offsetHeight;
+
+            var directions = [
+                { id: 'top', x: w / 2, y: 0 },
+                { id: 'right', x: w, y: h / 2 },
+                { id: 'bottom', x: w / 2, y: h },
+                { id: 'left', x: 0, y: h / 2 }
+            ];
+
+            directions.sort(function (a, b) {
+                return distance(mx, my, a.x, a.y) - distance(mx, my, b.x, b.y);
+            });
+
+            btn.setAttribute('data-direction', directions.shift().id);
+            btn.classList.add('is-open');
+        });
+
+        /*btnYes.addEventListener('click', function (event) {
+            btn.classList.remove('is-open');
+        });*/
+
+        btnNo.addEventListener('click', function (event) {
+            event.preventDefault();
+            btn.classList.remove('is-open');
+        });
+
+        function distance(x1, y1, x2, y2) {
+            var dx = x1 - x2;
+            var dy = y1 - y2;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+    };
+</script>
+}

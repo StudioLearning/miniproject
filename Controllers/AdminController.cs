@@ -1,15 +1,22 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using miniproject.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace miniproject.Controllers;
 
-public class MeController : Controller
+[Authorize(Roles= "Admin")]
+public class AdminController : Controller
 {
-    private readonly ILogger<AuthController> _logger;
+    private readonly ApplicationDbContext _context;
+    private readonly ILogger<AdminController> _logger;
 
-    public MeController(ILogger<AuthController> logger)
+    public AdminController(
+        ILogger<AdminController> logger, 
+        ApplicationDbContext context
+    )
     {
+        _context = context;
         _logger = logger;
     }
 

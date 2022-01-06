@@ -5,6 +5,12 @@
   padding-bottom: 30px;
 }
 
+.logo-icon {
+  color: #82c91e;
+  vertical-align: middle;
+  font-size: 1.5em;
+}
+
 @media (max-width: 767.98px) {
   .headerSpan {
     background-color: #e5f3d4;

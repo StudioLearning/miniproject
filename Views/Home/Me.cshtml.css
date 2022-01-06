@@ -1,0 +1,22 @@
+.meHeader {
+  background-color: #afdab7;
+  padding: 15px;
+  padding-bottom: 30px;
+  padding-top: 30px;
+  background-image: url("/img/contactme.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+}
+
+.meSpan {
+  background-color: #f0ffff52;
+  line-height: 1.5em;
+}
+
+@media (max-width: 767.98px) {
+  .meSpan {
+    background-color: #f0ffffb5;
+    line-height: 1.5em;
+  }
+}

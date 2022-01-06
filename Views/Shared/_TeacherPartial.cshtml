@@ -1,14 +1,19 @@
 @using miniproject.Models.Contentful
+@using Contentful.Core.Images
 
 @model Teacher
 
 @{
     Teacher teacher = Model;
+    var imageUrl = teacher?.image?.File.Url;
+    var imageUrlBuilder =
+    ImageUrlBuilder.New().SetWidth(250).SetHeight(250).SetResizingBehaviour(ImageResizeBehaviour.Fill);
+    var teacherUrl = $"{imageUrl}{imageUrlBuilder.Build()}";
 }
 
 <div class="col-lg-4">
     <div class="team-member">
-        <img class="mx-auto rounded-circle" src="@(teacher.image.File.Url)" alt="teacher" />
+        <img class="mx-auto rounded-circle" src="@(teacherUrl)" alt="teacher" />
         <h4>
             <a class="link text-dark text-decoration-none" asp-area="" asp-controller="Course" asp-action="Teacher"
                 asp-route-id="@(teacher.teacherId)">

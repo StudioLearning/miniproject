@@ -1,0 +1,87 @@
+@{
+    ViewData["Title"] = "Contact me.";
+}
+
+<div class="container-fluid meHeader">
+    <div class="row">
+        <div class="col-12">
+            <h1>Contact Me</h1>
+        </div>
+        <div class="col-12 col-md-8 col-lg-6 text-center pe-5 ps-5">
+            <h4>
+                <span class="meSpan">
+                    ร่วมกันสร้างสังคมแห่งการเรียนรู้
+                    สอนออนไลน์กับเราที่ StudioLearning
+                </span>
+            </h4>
+            <h5>
+                <span class="meSpan">
+                    การสอนไม่ใช้เรื่องยากอีกต่อไป เพียงแค่คุณมีความรู้ ความสามารถและใจที่อยากแบ่งปัน
+                    ก็สอนได้แล้วโดยสร้างคอร์สออนไลน์ในรูปแบบวีดีโอ และเผยแพร่ผ่านเว็บไซต์ www.studiolearning.online
+                </span>
+            </h5>
+            <h3>
+                <span class="meSpan">
+                    ถ้าพร้อมที่จะสอนออนไลน์กับเราที่ StudioLearning แล้ว กรอกแบบฟอร์มด้านล่างเลย
+                </span>
+            </h3>
+        </div>
+    </div>
+</div>
+
+<div class="container p-3">
+    <div class="row">
+        <div class="col-12">
+            <h2>ติดต่อเราเพื่อสร้างคอร์สออนไลน์</h2>
+
+        </div>
+        <div class="col-12 text-center">
+            <p>
+                หากคุณสนใจที่จะสร้างคอร์สออนไลน์ ในเว็บไซต์ StudioLearning
+                กรุณากรอกข้อมูลแนะนำตัวเองและระบุวิชาที่ต้องการจะสอน
+                เพื่อเราจะติดต่อคุณกลับ
+            </p>
+            <h5>คลิกที่นี่กรอกข้อมูลผ่าน Google Form</h5>
+            <a href="https://forms.gle/hqkCzEtuoe5jB7fs8" target="_bank" class="btn btn-secondary btn-lg m-5">
+                <i class="fas fa-hands-helping"></i>
+                กรอกข้อมูล
+            </a>
+        </div>
+    </div>
+
+    <div class="row pt-5">
+        <div class="col">
+            หากคุณมีคำถามหรือข้อสงสัย ก็สามารถติดต่อเราได้ที่
+        </div>
+        <div class="col-12">
+            <h4>
+                <i class="fas fa-envelope"></i>
+                <a href="mailto:info@studiolearning.online" class="text-decoration-none">
+                    info@@studiolearning.online
+                </a>
+            </h4>
+        </div>
+        <div class="col-12">
+            <h4>
+                <i class="fas fa-phone"></i>
+                <a href="tel:+66812868768" class="text-decoration-none">
+                    0812868768</a>
+            </h4>
+        </div>
+        <div class="col-12">
+            <h4>
+                ขอบคุณ
+            </h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col text-end">
+            <img src="/img/student_contact.png" style="max-height: 200px; transform: scaleX(-1);" />
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

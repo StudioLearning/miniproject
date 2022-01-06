@@ -1,14 +1,18 @@
 @using miniproject.Models.Contentful
+@using Contentful.Core.Images
 
 @model Lesson
 
 @{
     var lesson = Model;
+    var imageUrl = lesson?.image?.File.Url;
+    var imageUrlBuilder = ImageUrlBuilder.New().SetWidth(300);
+    var productUrl = $"{imageUrl}{imageUrlBuilder.Build()}";
 }
 
 <div class="card h-100">
     <a asp-area="" asp-controller="Course" asp-action="GetCourse" asp-route-id="@lesson?.sku">
-        <img class="card-img-top" src="@lesson?.image.File.Url" alt="Card image cap">
+        <img class="card-img-top" src="@productUrl" alt="Card image cap">
     </a>
     <div class="card-body">
         <h5 class="card-title">
