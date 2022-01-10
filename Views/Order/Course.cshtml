@@ -6,13 +6,11 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-@model Lesson
+@model Cart
 
 @{
     ViewData["Title"] = "Order";
-    Lesson lesson = Model;
-    double tax = Math.Round((int)lesson.price * .07, 2);
-    double coursePrice = (int)lesson.price - tax;
+    Cart cart = Model;
 }
 
 <nav aria-label="breadcrumb">
@@ -23,8 +21,8 @@
                 asp-action="Index">คอร์ส</a>
         </li>
         <li class="breadcrumb-item" aria-current="page"><a class="text-decoration-none" asp-area=""
-                asp-controller="Course" asp-action="GetCourse" asp-route-id="@lesson?.sku">
-                @lesson?.sku</a></li>
+                asp-controller="Course" asp-action="GetCourse" asp-route-id="@(cart.lesson.sku)">
+                @Html.DisplayFor(p => p.lesson.sku)</a></li>
         <li class="breadcrumb-item active" aria-current="page"> Order</li>
     </ol>
 </nav>
@@ -53,22 +51,23 @@
             <div class="card-body">
                 <h5 class="card-title text-center pb-3">รายการคำสั่งซื้อ</h5>
                 <p class="card-text">
-                    <b>วิชา</b> @lesson?.name
+                    <b>@Html.DisplayNameFor(p => p.lesson.name)</b> @Html.DisplayFor(p => p.lesson.name)
                 </p>
                 <p class="card-text">
-                    <b>รหัสคอร์ส</b> @lesson?.sku
+                    <b>@Html.DisplayNameFor(p => p.lesson.sku)</b> @Html.DisplayFor(p => p.lesson.sku)
                 </p>
                 <p class="card-text">
-                    <b>ผู้สอน</b> @lesson?.teacher?.teacherName
+                    <b>@Html.DisplayNameFor(p => p.lesson.teacher.teacherName)</b> @Html.DisplayFor(p =>
+                    p.lesson.teacher.teacherName)
                 </p>
                 <p class="card-text text-end">
-                    <b>ราคา</b> @coursePrice บาท
+                    <b>@Html.DisplayNameFor(p => p.price)</b> @Html.DisplayFor(p => p.price) บาท
                 </p>
                 <p class="card-text text-end">
-                    <b>ภาษี</b> 7% @tax บาท
+                    <b>@Html.DisplayNameFor(p => p.tax)</b> @Html.DisplayFor(p => p.tax) บาท
                 </p>
                 <h3 class="card-text text-center">
-                    <b>รวม</b> @lesson?.price บาท
+                    <b>@Html.DisplayNameFor(p => p.totalPrice)</b> @Html.DisplayFor(p => p.totalPrice) บาท
                 </h3>
             </div>
         </div>
@@ -91,15 +90,16 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body dialog">
-                <img class="mx-auto rounded-circle dialogImg" src="@(lesson?.image?.File.Url)" alt="Course" />
-                <h4>@lesson?.name</h4>
-                <p class="text-muted mb-0">รหัส @lesson?.sku</p>
-                <p class="text-muted">@lesson?.price บาท</p>
+                <img class="mx-auto rounded-circle dialogImg" src="@(cart.img)" alt="Course" />
+                <h4>@Html.DisplayFor(p => p.lesson.name)</h4>
+                <p class="text-muted mb-0">@Html.DisplayNameFor(p => p.lesson.sku) @Html.DisplayFor(p => p.lesson.sku)
+                </p>
+                <p class="text-muted">@Html.DisplayFor(p => p.totalPrice) บาท</p>
                 <p>กรุณากดปุ่ม <b>ยืนยัน</b> เพื่อสั่งซื้อคอร์ส</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                <a asp-area="" asp-controller="Order" asp-action="CreateOrder" asp-route-id="@lesson?.sku"
+                <a asp-area="" asp-controller="Order" asp-action="CreateOrder" asp-route-id="@(cart.lesson.sku)"
                     class="btn btn-primary text-decoration-none">ยืนยัน</a>
             </div>
         </div>

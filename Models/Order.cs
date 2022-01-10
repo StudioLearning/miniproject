@@ -1,4 +1,8 @@
+using System;
+// using System.Linq;
+using System.Reflection;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace miniproject.Models
 {
@@ -6,6 +10,7 @@ namespace miniproject.Models
     {
         [Required]
         [Display(Name = "รหัสใบสั่งซื้อ")]
+        [DisplayFormat(DataFormatString = "{0:000000}")]
         public int Id { get; set; }
 
         [Required]
@@ -25,11 +30,21 @@ namespace miniproject.Models
         public DateTime CreateDate { get; set; }
 
         [Required]
+        [DisplayFormat(DataFormatString = "{0:n2}")]
         [Display(Name = "ราคา")]
         public decimal Price { get; set; }
 
         [Required]
         [Display(Name = "สถานะการชำระเงิน")]
         public Orders PaymentState { get; set; }
+
+        [Display(Name = "การชำระเงิน")]
+        public string Payment {
+            get { return PaymentState.GetType().GetMember(PaymentState.ToString()).FirstOrDefault().GetCustomAttribute<DisplayAttribute>().GetName() ;}
+        }
+
+        [Display(Name = "วันที่ชำระเงิน")]
+        [DataType(DataType.DateTime)]
+        public DateTime PaidDate { get; set; }
     }
 }

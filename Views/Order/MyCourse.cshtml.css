@@ -1,0 +1,9 @@
+.limitImg {
+  max-height: 100px;
+  border-radius: 50%;
+  border: 0.25em solid #c1e5d8;
+}
+
+.bg-card {
+  background-color: #c1e5d81f;
+}

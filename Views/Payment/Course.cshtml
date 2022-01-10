@@ -1,15 +1,16 @@
 ﻿@using Contentful.Core.Models
 @using miniproject.Models.Contentful
+@using miniproject.Models
 
-@model Lesson
+@model (Lesson lesson, Order order)
 
 @section HeadScripts {
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 }
 @{
     ViewData["Title"] = "Payment";
-    Lesson lesson = Model;
-    Order order = ViewBag.order;
+    Lesson lesson = Model.lesson;
+    Order order = Model.order;
 }
 
 <nav aria-label="breadcrumb">
@@ -20,15 +21,22 @@
                 asp-action="Index">คอร์ส</a>
         </li>
         <li class="breadcrumb-item" aria-current="page"><a class="text-decoration-none" asp-area=""
-                asp-controller="Course" asp-action="GetCourse" asp-route-id="@Model.sku">
-                @Model.sku</a></li>
+                asp-controller="Course" asp-action="GetCourse" asp-route-id="@lesson.sku">
+                @lesson.sku</a></li>
         <li class="breadcrumb-item active" aria-current="page"> Payment</li>
     </ol>
 </nav>
 
 <div class="row pt-5 pb-5">
     <div class="col-12">
-        @Html.Partial("_Stepper", Stepper.PAYMENT)
+        @if (order.PaymentState == Orders.PENDING)
+        {
+            @Html.Partial("_Stepper", Stepper.PAYMENT)
+        }
+        else
+        {
+            @Html.Partial("_Stepper", Stepper.COMPLETE)
+        }
     </div>
 </div>
 
@@ -46,12 +54,22 @@
         <div class="card w-80">
             @* <img src="" class="card-img-top" alt="Course"> *@
             <div class="card-body">
-                <h5 class="card-title pb-3">รหัสใบสั่งซื้อ : @(order.Id)</h5>
+                <h5 class="card-title pb-3">
+                    @Html.DisplayNameFor(p => p.order.Id)
+                    :
+                    @Html.DisplayFor(p => p.order.Id)</h5>
                 <p class="card-text">
-                    วิชา
+                    @Html.DisplayNameFor(p => p.lesson.name)
+                    :
+                    @Html.DisplayFor(p => p.lesson.name)
                 </p>
                 <p class="card-text">
-                    ราคา บาท
+                    @Html.DisplayNameFor(p => p.order.Price) @Html.DisplayFor(p => p.order.Price) บาท
+                </p>
+                <p class="card-text">
+                    @Html.DisplayNameFor(p => p.order.Payment)
+                    :
+                    <b>@Html.DisplayFor(p => p.order.Payment)</b>
                 </p>
 
             </div>
@@ -59,56 +77,146 @@
     </div>
 </div>
 
-<div class="row justify-content-center mt-5">
+@if (order.PaymentState == Orders.PENDING)
+{
+    <div class="row justify-content-center mt-5">
     <div class="col-12 col-md-6 pb-5">
         <div id="paypal-button-container"></div>
     </div>
 </div>
+}
 
-
-@section Scripts
+@if (order.PaymentState == Orders.PENDING)
+{
+    @section Scripts
 {
 <script
     src="https://www.paypal.com/sdk/js?client-id=ATQ3dUs6iOV23KS0RkvaiunUlU8YmKPr39A_beYjDiDsVL8C0ukHXQljy5A9tJ5b6XlxhhDKdbCgv3h0&currency=THB&locale=th_TH"></script>
-<script>
-    paypal.Buttons({
+<script src="/js/localstorage.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<style>
+    .lds-facebook {
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 80px;
+    }
 
-        // Sets up the transaction when a payment button is clicked
-        createOrder: function (data, actions) {
-            return actions.order.create({
-                purchase_units: [{
-                    amount: {
-                        currency_code: "THB",
-                        value: "@(lesson.price)",
-                    },
-                    description: "@(lesson.name)",
-                    custom_id: "B120154",
-                }]
-            });
-        },
+    .lds-facebook div {
+        display: inline-block;
+        position: absolute;
+        left: 8px;
+        width: 16px;
+        background: #999;
+        animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+    }
 
-        // Finalize the transaction after payer approval
-        onApprove: function (data, actions) {
-            return actions.order.capture().then(function (orderData) {
-                // Successful capture! For dev/demo purposes:
-                console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
-                // var transaction = orderData.purchase_units[0].payments.captures[0];
-                // alert('Transaction ' + transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
+    .lds-facebook div:nth-child(1) {
+        left: 8px;
+        animation-delay: -0.24s;
+    }
 
-                // When ready to go live, remove the alert and show a success message within this page. For example:
-                var element = document.getElementById('paypal-button-container');
-                element.innerHTML = '';
-                element.innerHTML = '<h3 class="text-center">Thank you for your payment!</h3>';
-                // Or go to another URL:  actions.redirect('thank_you.html');
-            });
-        },
+    .lds-facebook div:nth-child(2) {
+        left: 32px;
+        animation-delay: -0.12s;
+    }
 
-        onCancel: function (data) {
-            // Show a cancel page, or return to cart
-            console.log("this payment is cancel.");
+    .lds-facebook div:nth-child(3) {
+        left: 56px;
+        animation-delay: 0;
+    }
+
+    @@keyframes lds-facebook {
+        0% {
+            top: 8px;
+            height: 64px;
         }
 
-    }).render('#paypal-button-container');
+        50%,
+        100% {
+            top: 24px;
+            height: 32px;
+        }
+    }
+</style>
+<script>
+    function thankMessage() {
+        var element = document.getElementById('paypal-button-container');
+        element.innerHTML = '';
+        element.innerHTML = `
+        <h3 class="text-center">
+            <p>
+                Thank you for your payment!
+            </p>
+            <p>
+                โปรดรอการตรวจสอบจาก PayPal ใช้เวลาไม่นาน!
+            </p>
+            <div class="lds-facebook"><div></div><div></div><div></div></div>
+        </h3>
+        `;
+        setInterval(() => {
+            axios.get("/Order/ApiGetOrderPaymentState/@(order.Id)")
+                .then(function (response) {
+                    console.log(response.data);
+                    if (response.data == 1)
+                        location.reload();
+                }).catch((err) => console.log(err));
+        }, 1000);
+    }
+    const payment = store("Payment@(order.Id)");
+    var checkisok = true;
+    if (payment !== null) {
+        const start = payment.expire;
+        const end = Date.now() - start;
+        const time = Math.floor(end / 1000);
+        if (time < 60)
+            checkisok = false;
+    }
+    if (checkisok) {
+        paypal.Buttons({
+            // Sets up the transaction when a payment button is clicked
+            createOrder: function (data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            currency_code: "THB",
+                            value: "@(order.Price)",
+                        },
+                        description: "@(lesson.name)",
+                        custom_id: "@(order.Id)",
+                    }]
+                });
+            },
 
+            // Finalize the transaction after payer approval
+            onApprove: function (data, actions) {
+                return actions.order.capture().then(function (orderData) {
+                    // Successful capture! For dev/demo purposes:
+                    console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                    // var transaction = orderData.purchase_units[0].payments.captures[0];
+                    // alert('Transaction ' + transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
+
+                    // When ready to go live, remove the alert and show a success message within this page. For example:
+                    thankMessage();
+                    // Or go to another URL:  actions.redirect('thank_you.html');
+
+                    // Save Payment State to Local Storage 1 minute
+                    store("Payment@(order.Id)", {
+                        status: "@(Orders.PAID)",
+                        expire: Date.now()
+                    });
+                });
+            },
+
+            onCancel: function (data) {
+                // Show a cancel page, or return to cart
+                console.log("this payment is cancel.");
+            }
+
+        }).render('#paypal-button-container');
+    } else {
+        thankMessage();
+    }
 </script>
+}
 }

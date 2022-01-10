@@ -5,26 +5,33 @@
 
 @{
     ViewData["Title"] = "Course";
+    Lesson lesson = Model;
 }
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a class="text-decoration-none" asp-area="" asp-controller="Home"
-                asp-action="Index"><i class="fas fa-home"></i> หน้าแรก</a></li>
-        <li class="breadcrumb-item"><a class="text-decoration-none" asp-area="" asp-controller="Course"
-                asp-action="Index">คอร์ส</a>
+        <li class="breadcrumb-item"><a class="text-decoration-none" asp-controller="Home" asp-action="Index"><i
+                    class="fas fa-home"></i> หน้าแรก</a></li>
+        <li class="breadcrumb-item"><a class="text-decoration-none" asp-controller="Course" asp-action="Index">คอร์ส</a>
         </li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.sku</li>
+        <li class="breadcrumb-item active" aria-current="page">@Html.DisplayFor(p => p.sku)</li>
     </ol>
 </nav>
-<h1>@ViewData["Title"] @Model.name</h1>
+<h1>@ViewData["Title"] - @Html.DisplayFor(p => p.name)</h1>
 
-<div class="row">
+<div class="row mt-5 mb-5 justify-content-center">
+    <div class="col-12 text-center">
+        <i class="fab fa-leanpub fa-4x" style="color: #F783AC"></i><br />
+        <h3>เนื้อหามีทั้งหมด @lesson.course.Count() วีดีโอ</h3>
+    </div>
+</div>
+
+<div class="row mt-5 mb-5">
     <div class="col">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             @{
                 int CourseIndex = 1;
             }
-            @foreach (var item in Model.course)
+            @foreach (var item in lesson.course)
             {
 
                 <li class="nav-item" role="presentation">
@@ -41,7 +48,7 @@
             @{
                 CourseIndex = 1;
             }
-            @foreach (var item in Model.course)
+            @foreach (var item in lesson.course)
             {
                 <div class="tab-pane fade @(CourseIndex == 1 ? "show active":"")" id="content@(CourseIndex)" role="tabpanel"
                 aria-labelledby="tab-course-@(CourseIndex)">
@@ -56,3 +63,25 @@
         </div>
     </div>
 </div>
+
+<div class="row justify-content-center">
+    @Html.Partial("_TeacherPartial", lesson.teacher)
+</div>
+
+@section Scripts
+{
+<script>
+    const video = document.querySelectorAll("video");
+    var triggerTabList = [].slice.call(document.querySelectorAll('#myTab button'))
+    triggerTabList.forEach(function (triggerEl) {
+        var tabTrigger = new bootstrap.Tab(triggerEl)
+
+        triggerEl.addEventListener('click', function (event) {
+            video.forEach(function (element) {
+                element.pause();
+                //element.currentTime = 0; //Restart 
+            })
+        })
+    })
+</script>
+}

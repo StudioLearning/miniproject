@@ -1,4 +1,6 @@
 using Contentful.Core.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace miniproject.Models.Contentful;
 
@@ -6,13 +8,18 @@ public class Lesson
 {
     public SystemProperties? Sys { get; set; }
 
+    [Display(Name = "รหัสคอร์ส")]
     public string? sku { get; set; }
 
+    [Display(Name = "ชื่อคอร์ส")]
     public string? name { get; set; }
 
+    [Display(Name = "บทนำ")]
     public string? description { get; set; }
 
-    public int? price { get; set; }
+    [Display(Name = "ราคา")]
+    public int price { get; set; }
+
 
     public Document? content { get; set; }
 
@@ -20,7 +27,8 @@ public class Lesson
 
     public Asset? image { get; set; }
 
-    public Teacher? teacher { get; set; }
+    [Display(Name = "ผู้สอน")]
+    public Teacher teacher { get; set; }
 
     // public List<Course>? course { get; set; }
     

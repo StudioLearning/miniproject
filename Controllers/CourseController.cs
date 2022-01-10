@@ -46,6 +46,14 @@ namespace miniproject.Controllers
             return MyOrder.Any(order => order.Sku == sku);
         }
 
+        private async Task<Order> GetOrderBySku(string sku) {
+            var currentID = _userManager.GetUserId(User);
+            var Order = await _context.Order.ToListAsync();
+            return Order.Find(order => 
+                (order.UserId == currentID) && (order.Sku == sku)
+            );
+        }
+
         // GET: Course
         public async Task<IActionResult> Index()
         {
@@ -66,7 +74,14 @@ namespace miniproject.Controllers
             ViewData["examplevideo"] = lesson.Items.First().linkyoutube?.Replace("youtu.be","youtube.com/embed");
             
             if(_signManager.IsSignedIn(User) && await OrderCheck(id))
-                return View("GetCourseB", lesson.Items.First());
+            {
+                Order myOrder = await GetOrderBySku(id);
+                if(myOrder.PaymentState == Orders.PAID) {
+                    return View("GetCourseB", lesson.Items.First());
+                } else {
+                    return RedirectToAction("Course", "Payment", new { id = myOrder.Id});
+                }
+            }
             else
                 return View(lesson.Items.First<Lesson>());
         }

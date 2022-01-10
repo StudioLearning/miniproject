@@ -1,0 +1,32 @@
+﻿@using Contentful.Core.Models
+@using miniproject.Models.Contentful
+@using Microsoft.AspNetCore.Identity
+@using miniproject.Models
+
+@model List<Order>
+
+@{
+    ViewData["Title"] = "My Order";
+    List<Order> myOrder = Model;
+}
+
+@Html.Partial("_NavPartial")
+
+<div class="row pt-4 pb-4 justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        @foreach (var order in myOrder)
+        {
+            <div class="card mt-3">
+                <a href="@Url.ActionLink("Course", "Payment", new { id = order.Id})" class="text-decoration-none">
+                    <div class="card-body">
+                        <p>@Html.DisplayNameFor(myOrder => order.Id) : @Html.DisplayFor(myOrder => order.Id)</p>
+                        <p>@Html.DisplayNameFor(myOrder => order.Sku) : @Html.DisplayFor(myOrder => order.Sku)</p>
+                        <p>@Html.DisplayNameFor(myOrder => order.Price) @Html.DisplayFor(myOrder => order.Price) บาท</p>
+                        <p>@Html.DisplayNameFor(myOrder => order.Payment) : <b>@Html.DisplayFor(myOrder =>
+                            order.Payment)</b></p>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>

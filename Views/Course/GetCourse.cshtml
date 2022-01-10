@@ -16,12 +16,11 @@
 }
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a class="text-decoration-none" asp-area="" asp-controller="Home"
-                asp-action="Index"><i class="fas fa-home"></i> หน้าแรก</a></li>
-        <li class="breadcrumb-item"><a class="text-decoration-none" asp-area="" asp-controller="Course"
-                asp-action="Index">คอร์ส</a>
+        <li class="breadcrumb-item"><a class="text-decoration-none" asp-controller="Home" asp-action="Index"><i
+                    class="fas fa-home"></i> หน้าแรก</a></li>
+        <li class="breadcrumb-item"><a class="text-decoration-none" asp-controller="Course" asp-action="Index">คอร์ส</a>
         </li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.sku</li>
+        <li class="breadcrumb-item active" aria-current="page">@Html.DisplayFor(p => p.sku)</li>
     </ol>
 </nav>
 
@@ -31,12 +30,12 @@
     </div>
 </div>
 
-<h1>@ViewData["Title"] @Model.name</h1>
+<h1>@ViewData["Title"] - @Html.DisplayFor(p => p.name)</h1>
 <div class="row">
     <div class="col">
         <p class="fw-bold fs-3">
             <i class="far fa-star" style="color: #FFD43B"></i>
-            ตัวอย่างคอร์สเรียน @Model.name
+            ตัวอย่างคอร์สเรียน @Html.DisplayFor(p => p.name)
         </p>
     </div>
 </div>
@@ -52,18 +51,18 @@
 
 <div class="row pt-4">
     <div class="col" style="text-indent: 2rem; font-size: 1.2rem">
-        <contentful-rich-text document="@(Model.content)"></contentful-rich-text>
+        <contentful-rich-text document="@(lesson.content)"></contentful-rich-text>
     </div>
 </div>
 <div class="row text-center">
     <div class="col-12">
         <p>
-            @foreach (var courseType in Model.courses)
+            @foreach (var courseType in lesson.courses)
             {
                 <span class="p-3">
                     <a class="link text-decoration-none" asp-area="" asp-controller="Course" asp-action="Type"
                     asp-route-id="@(courseType.name)">
-                        <i class="@Html.Raw(courseType.fontIconTag)"></i> @(courseType.name)
+                        <i class="@Html.Raw(courseType.fontIconTag)"></i> @Html.DisplayFor(lesson => courseType.name)
                     </a>
                 </span>
             }
@@ -71,14 +70,14 @@
     </div>
     <div class="col-12 fs-3 fw-bold">
         <partial name="_RateStar" />
-        <p>THB@(Model.price)</p>
+        <p>@Html.DisplayNameFor(p => p.price) @Html.DisplayFor(p => p.price) บาท</p>
     </div>
     <div class="col-12 pb-3 teacher">
         <img class="mx-auto rounded-circle" src="@(teacherUrl)" alt="teacher" />
         <h4>
-            <a class="link text-dark text-decoration-none" asp-area="" asp-controller="Course" asp-action="Teacher"
+            <a class="link text-dark text-decoration-none" asp-controller="Course" asp-action="Teacher"
                 asp-route-id="@(lesson?.teacher?.teacherId)">
-                <i class="fas fa-graduation-cap"></i> @(lesson?.teacher?.teacherName)
+                <i class="fas fa-graduation-cap"></i> @Html.DisplayFor(p => p.teacher.teacherName)
             </a>
         </h4>
     </div>
@@ -91,7 +90,7 @@
         <div class="buy-btn" style="margin: auto;">
             <div class="btn-back">
                 <p>ผู้เรียนยังไม่ได้ลงชื่อเข้าใช้ระบบกรุณา Login ก่อน</p>
-                <a href="@Url.Action("Course", "Order", new {id = Model.sku})" class="yes">
+                <a href="@Url.Action("Course", "Order", new {id = lesson.sku})" class="yes">
                     <i class="fas fa-user"></i>
                     Login
                 </a>
@@ -99,7 +98,7 @@
             </div>
             @if (SignInManager.IsSignedIn(User))
             {
-                <a href="@Url.Action("Course", "Order", new {id = Model.sku})" class="btn-front">
+                <a href="@Url.Action("Course", "Order", new {id = lesson.sku})" class="btn-front">
                     ไปยังหน้าสั่งซื้อ
                     <i class="fas fa-arrow-right"></i>
                 </a>

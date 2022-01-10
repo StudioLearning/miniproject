@@ -1,0 +1,89 @@
+@using miniproject.Models.Report;
+@model IEnumerable<Report4Month>
+
+@{
+    string TheMonth = ViewBag.month;
+    int TheYear = ViewBag.year;
+    ViewData["Title"] = "Report " + TheMonth + ", " + TheYear.ToString();
+    IEnumerable<Report4Month> reports = Model;
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table text-center mt-5 mb-5">
+    <thead>
+        <tr>
+            <th scope="col">@Html.DisplayNameFor(p => p.Id)</th>
+            <th scope="col">@Html.DisplayNameFor(p => p.name)</th>
+            <th scope="col">@Html.DisplayNameFor(p => p.income)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var report in reports)
+        {
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <div class="color4chart me-2" style="background-color: @(report.color)"></div>
+                        <a class="text-decoration-none text-uppercase" href="@(report.link)">
+                            @Html.DisplayFor(modelItem => report.Id)
+                        </a>
+                    </div>
+                </td>
+                <td>@Html.DisplayFor(modelItem => report.name)</td>
+                <td>@Html.DisplayFor(modelItem => report.income) บาท</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="row mt-5 mb-5">
+    <div id="chart_div"></div>
+</div>
+
+@section Scripts {
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    function drawChart() {
+
+        // Create the data table.
+        var data = google.visualization.arrayToDataTable([
+            ["รหัสอาจารย์", "ยอดขาย", { role: "style" }],
+            @foreach (var report in reports)
+            {  
+                <text>
+                    ["@(report.Id.ToUpper())", @(report.income), 
+                    "@(report.color)"],
+                </text>
+            }
+        ]);
+
+        // Set chart options
+        var options = {
+            title: 'กราฟแสดงยอดขายของอาจารย์',
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }
+</script>
+<style>
+.color4chart {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-flex;
+}
+</style>
+}

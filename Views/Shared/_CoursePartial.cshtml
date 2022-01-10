@@ -11,24 +11,24 @@
 }
 
 <div class="card h-100">
-    <a asp-area="" asp-controller="Course" asp-action="GetCourse" asp-route-id="@lesson?.sku">
+    <a asp-controller="Course" asp-action="GetCourse" asp-route-id="@lesson?.sku">
         <img class="card-img-top" src="@productUrl" alt="Card image cap">
     </a>
     <div class="card-body">
         <h5 class="card-title">
-            <a class="link text-dark text-decoration-none" asp-area="" asp-controller="Course" asp-action="GetCourse"
+            <a class="link text-dark text-decoration-none" asp-controller="Course" asp-action="GetCourse"
                 asp-route-id="@lesson?.sku">
-                @(lesson?.sku) @(lesson?.name)
+                @Html.DisplayFor(p => p.sku) @Html.DisplayFor(p => p.name)
             </a>
         </h5>
         <p>
             @foreach (var courseType in lesson.courses)
             {
                 <span class="pe-1">
-                    <a class="link text-decoration-none" asp-area="" asp-controller="Course" asp-action="Type"
+                    <a class="link text-decoration-none" asp-controller="Course" asp-action="Type"
                     asp-route-id="@(courseType.name)">
                         @* <i class="@Html.Raw(courseType.fontIconTag)"></i> @(courseType.name) *@
-                        #@courseType.name
+                        #@Html.DisplayFor(lesson => courseType.name)
                     </a>
                 </span>
             }
@@ -36,20 +36,19 @@
         <p class="card-text">@(lesson.description)</p>
         <p>
             <i class="fas fa-graduation-cap"></i>
-            <a class="link text-decoration-none" asp-area="" asp-controller="Course" asp-action="Teacher"
+            <a class="link text-decoration-none" asp-controller="Course" asp-action="Teacher"
                 asp-route-id="@(lesson.teacher.teacherId)">
-                @(lesson.teacher.teacherName)
+                @Html.DisplayFor(p => p.teacher.teacherName)
             </a>
         </p>
         <div class="row">
             <div class="col">
                 <partial name="_RateStar" />
-                <p class="fw-bold">THB@(lesson.price)</p>
             </div>
             <div class="col text-end align-self-end">
-                <a class="btn btn-primary" asp-area="" asp-controller="Course" asp-action="GetCourse"
+                <a class="text-decoration-none" asp-controller="Course" asp-action="GetCourse"
                     asp-route-id="@lesson.sku">
-                    see detail
+                    <p class="fw-bold">@Html.DisplayFor(p => p.price) บาท</p>
                 </a>
             </div>
         </div>

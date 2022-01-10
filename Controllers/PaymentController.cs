@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using miniproject.Models;
 using miniproject.Models.Contentful;
 using Contentful.Core;
+using Contentful.Core.Models;
 using Contentful.Core.Search;
 using Newtonsoft.Json;
 
@@ -64,11 +65,10 @@ public class PaymentController : Controller
             .ContentTypeIs("lesson")
             .FieldEquals(f => f.sku, order.Sku);
         var lesson = await _contentful.GetEntries(queryBuilder);
-        ClaimsPrincipal currentUser = this.User;
-        var currentUserID = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
-        ViewBag.currentUserID = currentUserID;
-        ViewBag.order = order;
-        return View(lesson.Items.First());
+
+        return View(
+            (lesson.Items.First(), order)
+        );
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,0 +1,39 @@
+﻿@using Contentful.Core.Models
+@using Contentful.Core.Images
+@using miniproject.Models.Contentful
+@using Microsoft.AspNetCore.Identity
+@using miniproject.Models
+
+@model List<Lesson>
+
+@{
+    ViewData["Title"] = "My Course";
+    List<Lesson> myCourse = Model;
+}
+
+@Html.Partial("_NavPartial")
+
+<div class="row pt-4 pb-4 justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        @foreach (var course in myCourse)
+        {
+            var imageUrl = course.image.File.Url;
+            var imageUrlBuilder =
+            ImageUrlBuilder.New().SetHeight(100).SetWidth(100).SetResizingBehaviour(ImageResizeBehaviour.Fill);
+            var courseUrl = $"{imageUrl}{imageUrlBuilder.Build()}";
+
+            <div class="card mt-3 bg-card">
+                <a href="@Url.ActionLink("GetCourse", "Course", new { id = course.sku})" class="text-decoration-none">
+                    <div class="text-center mt-3 mb-3">
+                        <img class="limitImg" src="@(courseUrl)" class="card-img-top" alt="course image">
+                    </div>
+                    <div class="card-body">
+                        <p>@Html.DisplayFor(myCourse => course.sku)</p>
+                        <p>@Html.DisplayFor(myCourse => course.name)</p>
+                        <p>@Html.DisplayFor(myCourse => course.description)</p>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
